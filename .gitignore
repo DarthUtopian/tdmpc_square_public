@@ -1,0 +1,17 @@
+# python
+.python-version
+*.egg-info
+__pycache__/
+*.py[cod]
+dist
+
+# macOS
+.DS_Store
+
+# others
+logdir
+logs
+models
+outputs
+runs
+wandb
