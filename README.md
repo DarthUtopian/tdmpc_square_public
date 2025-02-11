@@ -2,7 +2,7 @@
 
 [Paper](https://arxiv.org/abs/2502.03550) [Website](https://darthutopian.github.io/tdmpc_square/)
 
-We present <u>T</u>emporal <u>D</u>ifference Learning for <u>M</u>odel <u>P</u>redictive <u>C</u>ontrol with <u>P</u>olicy <u>C</u>onstraint (<strong>TD-M(PC)\(^2\)</strong>), a simple yet effective approach built on TD-MPC2 that allows a planning-based MBRL algorithm to better exploit complete off-policy data. This repo is built on top of <a href="https://humanoid-bench.github.io" target="_blank"><code>HumanoidBench</code></a>, it contains example code to implement TD-M(PC)^2 and reproduce results in the paper.
+We present <u>T</u>emporal <u>D</u>ifference Learning for <u>M</u>odel <u>P</u>redictive <u>C</u>ontrol with <u>P</u>olicy <u>C</u>onstraint (<strong>TD-M(PC)\(^2\)</strong>), a simple yet effective approach built on TD-MPC2 that allows a planning-based MBRL algorithm to better exploit complete off-policy data generated from planner. This repo is built on top of <a href="https://humanoid-bench.github.io" target="_blank"><code>HumanoidBench</code></a>, it contains example implementation TD-M(PC)^2 to reproduce results in the paper.
 
 ![image](demo.gif)
 
