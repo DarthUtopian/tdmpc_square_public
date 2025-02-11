@@ -364,13 +364,10 @@ class TDMPC2:
 			std = torch.max(std, self.cfg.min_std * torch.ones_like(std))
 			eps = (pis - mu) / std
 			log_pis_prior = math.gaussian_logprob(eps, std.log(), size=action_dims).mean(dim=-1)
-			log_pis_prior = torch.clamp(log_pis_prior, -50000, 0.0)
+			#log_pis_prior = torch.clamp(log_pis_prior, -50000, 0.0)
 			self.log_pi_scale.update(log_pis_prior[0]) # Update scale
 
-			if self.scale.value <= self.cfg.scale_threshold:
-				log_pis_prior = torch.zeros_like(log_pis_prior)
-			else:
-				log_pis_prior = self.scale(log_pis_prior)
+			log_pis_prior = self.scale(log_pis_prior) if self.scale.value > self.cfg.scale_threshold else torch.zeros_like(log_pis_prior)
 
 			q_loss = ((self.cfg.entropy_coef * log_pis - qs).mean(dim=(1, 2)) * rho).mean()
 			prior_loss = - (log_pis_prior.mean(dim=-1) * rho).mean()
