@@ -9,7 +9,7 @@ obs: state
 checkpoint: ???
 eval_episodes: 1
 eval_pi: true
-eval_value: true
+eval_value: true # evaluate value function approximation
 eval_freq: 50000
 
 # training
@@ -28,10 +28,7 @@ discount_min: 0.95
 discount_max: 0.995
 buffer_size: 1_000_000
 data_dir: ???
-# exp mode
 exp_name: default
-record_q_scale: true # record curve of action value scale
-record_pi_q_scale: false # record curve of policy action value scale
 
 # planning
 mpc: true
@@ -45,7 +42,7 @@ max_std: 2
 temperature: 0.5
 
 # actor
-actor_mode: "residual"  # ["residual", "awac", "sac", "bc_sac", "bc"]
+actor_mode: "residual"  #["residual", "awac", "sac", "bc_sac", "bc"]
 log_std_min: -10
 log_std_max: 2
 prior_coef: 1.0

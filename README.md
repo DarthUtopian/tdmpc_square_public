@@ -52,7 +52,7 @@ pip install -r requirements_dreamer.txt
 
 
 ## Implementation
-This repository offers one possible implementation of the proposed framework (used to reproduce the results in the paper), which is largely built upon the official implementation of <a href="https://github.com/nicklashansen/tdmpc2" target="_blank"><code>TD-MPC2</code></a>, to which we attribute significant credit. 
+This repository offers one possible implementation of the proposed framework (used to reproduce results in the paper), which is largely built upon the official implementation of <a href="https://github.com/nicklashansen/tdmpc2" target="_blank"><code>TD-MPC2</code></a>, to which we attribute significant credit. 
 
 In fact, one can simple modify <a href="https://github.com/nicklashansen/tdmpc2" target="_blank"><code>TD-MPC2</code></a> and acquire similar performance in the paper through the following steps:  
 
@@ -128,10 +128,8 @@ python -m tdmpc_square.train disable_wandb=False wandb_entity=[WANDB_ENTITY] exp
 For DMControl tasks:
 ```
 For HumanoidBench tasks:
-# Define TASK
 export TASK="dog-trot"
 
-# Train TD-M(PC)^2
 python -m tdmpc_square.train disable_wandb=False wandb_entity=[WANDB_ENTITY] exp_name=tdmpc task=${TASK} seed=0
 ```
 
@@ -163,12 +161,3 @@ python ./ppo/run_sb3_ppo.py --env_name ${TASK} --wandb_entity [WANDB_ENTITY] --s
   year={2025}
 }
 ```
-
-
-## References
-This codebase contains some files adapted from other sources:
-* humanoidbench: https://github.com/carlosferrazza/humanoid-bench/tree/main
-* jaxrl_m: https://github.com/dibyaghosh/jaxrl_m/tree/main
-* DreamerV3: https://github.com/danijar/dreamerv3
-* TD-MPC2: https://github.com/nicklashansen/tdmpc2
-* purejaxrl (JAX-PPO traning): https://github.com/luchris429/purejaxrl/tree/main

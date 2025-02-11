@@ -470,24 +470,6 @@ class TDMPC2:
 			consistency_loss += F.mse_loss(z, next_z[t]) * self.cfg.rho**t
 			zs[t + 1] = z
 
-
-		#####################
-		if self.cfg.record_q_scale:
-			# in-distribution q value scale
-			with torch.no_grad():
-				qs = self.model.Q(zs[:-1], action, task, return_type="all")
-				q_val_sacle = torch.cat([q.view(-1) for q in qs]).mean().item()
-		#####################
-
-		#####################
-		if self.cfg.record_pi_q_scale:
-			# out-of-distribution q value scale
-			with torch.no_grad():
-				pi = self.model.pi(zs[:-1], task)[1]
-				qs = self.model.Q(zs[:-1], pi, task, return_type="all")
-				q_val_sacle_ood = torch.cat([q.view(-1) for q in qs]).mean().item()
-		#####################
-
 		# Predictions
 		_zs = zs[:-1]
 		qs = self.model.Q(_zs, action, task, return_type="all")
@@ -541,6 +523,4 @@ class TDMPC2:
 			"grad_norm": float(grad_norm),
 			"pi_scale": float(self.scale.value),
 			"log_pi_scale": float(self.log_pi_scale.value),	
-			"q_val_scale": q_val_sacle if self.cfg.record_q_scale else 0,
-			"q_val_scale_ood": q_val_sacle_ood if self.cfg.record_pi_q_scale else 0,
 		}
