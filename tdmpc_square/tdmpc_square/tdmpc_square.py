@@ -46,7 +46,7 @@ class TDMPC2:
 		)
 		self.model.eval()
 		self.scale = RunningScale(cfg)
-		self.log_pi_scale = RunningScale(cfg)	
+		self.log_pi_scale = RunningScale(cfg) # policy log-probability scale
 		self.cfg.iterations += 2 * int(
 			cfg.action_dim >= 20
 		)  # Heuristic for large action spaces
@@ -365,7 +365,6 @@ class TDMPC2:
 			eps = (pis - mu) / std
 			log_pis_prior = math.gaussian_logprob(eps, std.log(), size=action_dims).mean(dim=-1)
 			#log_pis_prior = torch.clamp(log_pis_prior, -50000, 0.0)
-			self.log_pi_scale.update(log_pis_prior[0]) # Update scale
 
 			log_pis_prior = self.scale(log_pis_prior) if self.scale.value > self.cfg.scale_threshold else torch.zeros_like(log_pis_prior)
 
@@ -521,6 +520,5 @@ class TDMPC2:
 			"pi_loss_prior": pi_loss_prior,
 			"total_loss": float(total_loss.mean().item()),
 			"grad_norm": float(grad_norm),
-			"pi_scale": float(self.scale.value),
-			"log_pi_scale": float(self.log_pi_scale.value),	
+			"pi_scale": float(self.scale.value)
 		}
