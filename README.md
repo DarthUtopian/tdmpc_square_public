@@ -6,7 +6,6 @@ We present <u>T</u>emporal <u>D</u>ifference Learning for <u>M</u>odel <u>P</u>r
 
 ![image](demo.gif)
 
-
 ## Directories
 Structure of the repository:
 * `data`: Weights of the low-level skill policies
@@ -48,36 +47,6 @@ pip install -r requirements_jaxrl.txt
 
 # Install dreamer
 pip install -r requirements_dreamer.txt
-```
-
-
-## Implementation
-This repository offers one possible implementation of the proposed framework (used to reproduce results in the paper), which is largely built upon the official implementation of <a href="https://github.com/nicklashansen/tdmpc2" target="_blank"><code>TD-MPC2</code></a>, to which we attribute significant credit. 
-
-In fact, one can simple modify <a href="https://github.com/nicklashansen/tdmpc2" target="_blank"><code>TD-MPC2</code></a> and acquire similar performance in the paper through the following steps:  
-
-Modify the buffer to store `mu` and `std` of the planner in `tdmpc2/tdmpc2/trainer/online_trainer.py` and `tdmpc2/tdmpc2/common/buffer.py` (Extra one line code needed). 
-
-In `tdmpc2/tdmpc2.py`, pass `mu` and `std` into function `TDMPC2.update_pi` add policy regularization term by replacing
-```python
-pi_loss = ((self.cfg.entropy_coef * log_pis - qs).mean(dim=(1, 2)) * rho).mean()
-```
-into
-```python
-std = torch.max(std, self.cfg.min_std * torch.ones_like(std))
-eps = (pis - mu) / std
-log_pis_prior = math.gaussian_logprob(eps, std.log()).mean(dim=-1)
-log_pis_prior = self.scale(log_pis_prior) if self.scale.value > self.cfg.scale_threshold else torch.zeros_like(log_pis_prior)
-q_loss = ((self.cfg.entropy_coef * log_pis - qs).mean(dim=(1, 2)) * rho).mean()
-prior_loss = - (log_pis_prior.mean(dim=-1) * rho).mean()
-pi_loss = q_loss + self.cfg.prior_coef * prior_loss
-```
-Moreover, one can achieve similar performance by a even more simple modification:
-directly adding a BC loss to the policy learning target
-```python
-q_loss = ((self.cfg.entropy_coef * log_pis - qs).mean(dim=(1, 2)) * rho).mean()
-prior_loss = (((pis - action) ** 2).sum(dim=-1).mean(dim=1) * rho).mean()
-pi_loss = q_loss + self.cfg.prior_coef * prior_loss
 ```
 
 ## Env Test
@@ -149,6 +118,35 @@ python ./jaxrl_m/examples/mujoco/run_mujoco_sac.py --env_name ${TASK} --wandb_en
 
 # Train PPO (not using MJX)
 python ./ppo/run_sb3_ppo.py --env_name ${TASK} --wandb_entity [WANDB_ENTITY] --seed 0
+```
+
+## Implementation
+This repository offers one possible implementation of the proposed framework (used to reproduce results in the paper), which is largely built upon the official implementation of <a href="https://github.com/nicklashansen/tdmpc2" target="_blank"><code>TD-MPC2</code></a>, to which we attribute significant credit. 
+
+In fact, one can simple modify <a href="https://github.com/nicklashansen/tdmpc2" target="_blank"><code>TD-MPC2</code></a> and acquire similar performance in the paper through the following steps:  
+
+Modify the buffer to store `mu` and `std` of the planner in `tdmpc2/tdmpc2/trainer/online_trainer.py` and `tdmpc2/tdmpc2/common/buffer.py` (Extra one line code needed). 
+
+In `tdmpc2/tdmpc2.py`, pass `mu` and `std` into function `TDMPC2.update_pi` add policy regularization term by replacing
+```python
+pi_loss = ((self.cfg.entropy_coef * log_pis - qs).mean(dim=(1, 2)) * rho).mean()
+```
+into
+```python
+std = torch.max(std, self.cfg.min_std * torch.ones_like(std))
+eps = (pis - mu) / std
+log_pis_prior = math.gaussian_logprob(eps, std.log()).mean(dim=-1)
+log_pis_prior = self.scale(log_pis_prior) if self.scale.value > self.cfg.scale_threshold else torch.zeros_like(log_pis_prior)
+q_loss = ((self.cfg.entropy_coef * log_pis - qs).mean(dim=(1, 2)) * rho).mean()
+prior_loss = - (log_pis_prior.mean(dim=-1) * rho).mean()
+pi_loss = q_loss + self.cfg.prior_coef * prior_loss
+```
+Moreover, one can achieve similar performance by a even more simple modification:
+directly adding a BC loss to the policy learning target
+```python
+q_loss = ((self.cfg.entropy_coef * log_pis - qs).mean(dim=(1, 2)) * rho).mean()
+prior_loss = (((pis - action) ** 2).sum(dim=-1).mean(dim=1) * rho).mean()
+pi_loss = q_loss + self.cfg.prior_coef * prior_loss
 ```
 
 
